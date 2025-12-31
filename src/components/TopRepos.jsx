@@ -20,7 +20,7 @@ export default function TopRepos({ repos = [] }) {
 
   return (
     <div className="space-y-3">
-      {list.map((repo) => {
+      {list.map((repo, idx) => {
         const name = repo?.name || repo?.repoName || 'repo'
         const description = repo?.description || repo?.desc || ''
         const stars = repo?.stars ?? repo?.stargazers ?? repo?.stargazerCount ?? 0
@@ -30,7 +30,10 @@ export default function TopRepos({ repos = [] }) {
         const url = repo?.url || repo?.htmlUrl || repo?.html_url
 
         return (
-          <article key={name} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <article
+            key={`${name}-${url || idx}`}
+            className="rounded-2xl border border-white/10 bg-white/5 p-4"
+          >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <h4 className="truncate text-sm font-semibold text-white">{name}</h4>

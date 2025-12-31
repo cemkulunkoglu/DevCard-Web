@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import LanguageBars from './LanguageBars.jsx'
 import TopRepos from './TopRepos.jsx'
 
@@ -55,10 +56,17 @@ export default function DevCard({ portfolio }) {
     pick(portfolio?.user, ['avatarUrl', 'avatarURL', 'avatar', 'imageUrl'], '') ||
     pick(portfolio?.profile, ['avatarUrl', 'avatarURL', 'avatar', 'imageUrl'], '')
 
-  const website =
+  const rawWebsite =
     pick(portfolio, ['websiteUrl', 'website', 'webSite', 'blog', 'site'], '') ||
     pick(portfolio?.user, ['websiteUrl', 'website', 'webSite', 'blog', 'site'], '') ||
     pick(portfolio?.profile, ['websiteUrl', 'website', 'webSite', 'blog', 'site'], '')
+
+  const website = useMemo(() => {
+    const w = String(rawWebsite || '').trim()
+    if (!w) return ''
+    if (/^https?:\/\//i.test(w)) return w
+    return `https://${w}`
+  }, [rawWebsite])
 
   const stats = portfolio?.stats || portfolio?.statistics || portfolio
   const repos = pick(stats, ['totalRepos', 'repos', 'repositories', 'repoCount'], 0)
@@ -76,7 +84,12 @@ export default function DevCard({ portfolio }) {
       <div className="flex items-start gap-4">
         <div className="h-16 w-16 overflow-hidden rounded-2xl border border-white/15 bg-white/5">
           {avatarUrl ? (
-            <img src={avatarUrl} alt={`${name} avatar`} className="h-full w-full object-cover" />
+            <img
+              src={avatarUrl}
+              alt={`${name} avatar`}
+              className="h-full w-full object-cover"
+              crossOrigin="anonymous"
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-xs text-slate-200/60">
               Avatar

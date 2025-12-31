@@ -1,4 +1,4 @@
-const API_BASE = 'https://localhost:7123'
+const API_BASE = (import.meta?.env?.VITE_API_BASE || 'https://localhost:7123').replace(/\/+$/, '')
 
 function normalizeErrorMessage(err) {
   if (!err) return 'Beklenmeyen bir hata oluştu.'

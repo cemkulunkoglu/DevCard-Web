@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 function clampNumber(n, min, max) {
   const x = Number(n)
   if (Number.isNaN(x)) return min
@@ -5,6 +7,14 @@ function clampNumber(n, min, max) {
 }
 
 export default function LanguageBars({ languages = [] }) {
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    setReady(false)
+    const id = requestAnimationFrame(() => setReady(true))
+    return () => cancelAnimationFrame(id)
+  }, [languages])
+
   if (!Array.isArray(languages) || languages.length === 0) {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -35,8 +45,11 @@ export default function LanguageBars({ languages = [] }) {
 
             <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full"
-                style={{ width: `${percent}%`, backgroundColor: color }}
+                className="h-full rounded-full transition-[width] duration-700 ease-out motion-reduce:transition-none"
+                style={{
+                  width: ready ? `${percent}%` : '0%',
+                  backgroundColor: color,
+                }}
                 role="progressbar"
                 aria-label={`${name} yüzdesi`}
                 aria-valuenow={percent}
